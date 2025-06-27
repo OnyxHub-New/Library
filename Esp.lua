@@ -711,38 +711,34 @@ function EspInterface.Unload()
 end
 
 function EspInterface.getWeapon(player)
-    local character = player.Character
-    if not character then return "None" end
-
-   
-    for _, child in ipairs(character:GetChildren()) do
-        if child.Name == "Knife" or child.Name == "Gun" then
-            return child.Name
-        end
-    end
-
-  
-    local rightHand = character:FindFirstChild("RightHand")
-    if rightHand then
-        for _, item in ipairs(rightHand:GetChildren()) do
-            if item.Name == "Knife" then
-                return "Knife"
-            elseif item.Name == "Gun" then
-                return "Gun"
+    if not player.Character then return "None" end
+    
+    local weaponGroups = {
+        Knife = {"Knife", "BloodKnife"},
+        Gun = {"Gun", "Revolver"}
+    }
+    
+    
+    for weaponType, names in pairs(weaponGroups) do
+        for _, name in ipairs(names) do
+            if player.Character:FindFirstChild(name) then
+                return weaponType
             end
         end
     end
-
-  
+    
+   
     local backpack = player:FindFirstChild("Backpack")
     if backpack then
-        if backpack:FindFirstChild("Knife") then
-            return "Knife"
-        elseif backpack:FindFirstChild("Gun") then
-            return "Gun"
+        for weaponType, names in pairs(weaponGroups) do
+            for _, name in ipairs(names) do
+                if backpack:FindFirstChild(name) then
+                    return weaponType
+                end
+            end
         end
     end
-
+    
     return "None"
 end
 function EspInterface.isFriendly(player)
