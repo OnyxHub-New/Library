@@ -726,9 +726,7 @@ function EspInterface.getWeapon(player)
     end
 
     local inventory = player:FindFirstChild("Backpack")
-    if not inventory then
-        return "None"
-    end
+    
     
    
     if inventory:FindFirstChild("Knife") then
