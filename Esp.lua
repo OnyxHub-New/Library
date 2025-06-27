@@ -712,9 +712,17 @@ end
 
 function EspInterface.getWeapon(player)
     local character = player.Character
-    if not character then return "Unknown" end
+    if not character then return "None" end
 
-	local rightHand = character:FindFirstChild("RightHand")
+   
+    for _, child in ipairs(character:GetChildren()) do
+        if child.Name == "Knife" or child.Name == "Gun" then
+            return child.Name
+        end
+    end
+
+  
+    local rightHand = character:FindFirstChild("RightHand")
     if rightHand then
         for _, item in ipairs(rightHand:GetChildren()) do
             if item.Name == "Knife" then
@@ -725,16 +733,16 @@ function EspInterface.getWeapon(player)
         end
     end
 
-    local inventory = player:FindFirstChild("Backpack")
-    
-    
-   
-    if inventory:FindFirstChild("Knife") then
-        return "Knife"
-    elseif inventory:FindFirstChild("Gun") then
-        return "Gun"
+  
+    local backpack = player:FindFirstChild("Backpack")
+    if backpack then
+        if backpack:FindFirstChild("Knife") then
+            return "Knife"
+        elseif backpack:FindFirstChild("Gun") then
+            return "Gun"
+        end
     end
-    
+
     return "None"
 end
 function EspInterface.isFriendly(player)
