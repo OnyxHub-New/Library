@@ -711,7 +711,20 @@ function EspInterface.Unload()
 end
 
 function EspInterface.getWeapon(player)
-    
+    local character = player.Character
+    if not character then return "Unknown" end
+
+	local rightHand = character:FindFirstChild("RightHand")
+    if rightHand then
+        for _, item in ipairs(rightHand:GetChildren()) do
+            if item.Name == "Knife" then
+                return "Knife"
+            elseif item.Name == "Gun" then
+                return "Gun"
+            end
+        end
+    end
+
     local inventory = player:FindFirstChild("Backpack")
     if not inventory then
         return "None"
