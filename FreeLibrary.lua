@@ -3621,17 +3621,22 @@ Topbar.Hide.MouseButton1Click:Connect(function()
 end)
 
 UserInputService.InputBegan:Connect(function(input, processed)
-	if (input.KeyCode == Enum.KeyCode.LeftCtrl and not processed) then
-		if Debounce then return end
-		if Hidden then
-			Hidden = false
-			Unhide()
-		else
-			if not SearchHided then spawn(CloseSearch) end
-			Hidden = true
-			Hide()
-		end
-	end
+   
+    if input.UserInputType == Enum.UserInputType.Keyboard then
+        if input.KeyCode == Enum.KeyCode.LeftCtrl and not processed then
+            if Debounce then return end
+            if Hidden then
+                Hidden = false
+                Unhide()
+            else
+                if not SearchHided then 
+                    spawn(CloseSearch) 
+                end
+                Hidden = true
+                Hide()
+            end
+        end
+    end
 end)
 
 for _, TopbarButton in ipairs(Topbar:GetChildren()) do
