@@ -2742,7 +2742,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 			UserInputService.InputBegan:Connect(function(input, processed)
 
 				if CheckingForKey then
-					if input.KeyCode ~= Enum.KeyCode.Unknown and input.KeyCode ~= Enum.KeyCode.LeftControl then
+					if input.KeyCode ~= Enum.KeyCode.Unknown and input.KeyCode ~= Enum.KeyCode.B then
 						local SplitMessage = string.split(tostring(input.KeyCode), ".")
 						local NewKeyNoEnum = SplitMessage[3]
 						Keybind.KeybindFrame.KeybindBox.Text = tostring(NewKeyNoEnum)
@@ -3621,22 +3621,17 @@ Topbar.Hide.MouseButton1Click:Connect(function()
 end)
 
 UserInputService.InputBegan:Connect(function(input, processed)
-    if input.UserInputType == Enum.UserInputType.Keyboard then
-       
-        if input.KeyCode == Enum.KeyCode.LeftControl and not processed then
-            if Debounce then return end
-            if Hidden then
-                Hidden = false
-                Unhide()
-            else
-                if not SearchHided then 
-                    spawn(CloseSearch) 
-                end
-                Hidden = true
-                Hide()
-            end
-        end
-    end
+	if (input.KeyCode == Enum.KeyCode.B and not processed) then
+		if Debounce then return end
+		if Hidden then
+			Hidden = false
+			Unhide()
+		else
+			if not SearchHided then spawn(CloseSearch) end
+			Hidden = true
+			Hide()
+		end
+	end
 end)
 
 for _, TopbarButton in ipairs(Topbar:GetChildren()) do
