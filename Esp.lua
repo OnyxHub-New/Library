@@ -62,65 +62,6 @@ end
 
 
 
-local avatarCache = {}
-local footsteps = {}
-local heldItems = {}
-
-local function updateFootsteps()
-    local currentTime = tick()
-    for i = #footsteps, 1, -1 do
-        local step = footsteps[i]
-        local elapsed = currentTime - step.time
-        
-        if elapsed > EspInterface.teamSettings.enemy.footstepsDuration then
-            step.drawing:Remove()
-            table.remove(footsteps, i)
-        else
-            local position, inView = worldToScreen(step.position)
-            if inView then
-                step.drawing.Position = position
-                step.drawing.Visible = true
-                step.drawing.Transparency = 0.7 * (1 - elapsed/EspInterface.teamSettings.enemy.footstepsDuration)
-            else
-                step.drawing.Visible = false
-            end
-        end
-    end
-end
-
-local function loadAvatar(userId)
-    if avatarCache[userId] then return avatarCache[userId] end
-    
-    local success, result = pcall(function()
-        return game:GetService("Players"):GetUserThumbnailAsync(
-            userId,
-            Enum.ThumbnailType.HeadShot,
-            Enum.ThumbnailSize.Size100x100
-        )
-    end)
-    
-    if success then
-        avatarCache[userId] = result
-        return result
-    end
-    return nil
-end
-
-
-local function drawFootstep(position)
-    local step = {
-        position = position,
-        time = tick(),
-        drawing = Drawing.new("Circle")
-    }
-    step.drawing.Visible = true
-    step.drawing.Color = Color3.new(1, 1, 1)
-    step.drawing.Transparency = 0.7
-    step.drawing.Thickness = 1
-    step.drawing.Filled = false
-    step.drawing.Radius = 0.5
-    table.insert(footsteps, step)
-end
 
 
 
@@ -497,68 +438,7 @@ function EspObject:Render()
 		end
 	end
 
-	if enabled and onScreen and options.avatar then
-        if not self.avatar then
-            self.avatar = self:_create("Image", {
-                Visible = false,
-                Data = loadAvatar(self.player.UserId)
-            })
-        end
-        
-        if self.avatar then
-            self.avatar.Visible = true
-            self.avatar.Size = Vector2.new(options.avatarSize, options.avatarSize)
-            self.avatar.Position = corners.topRight + Vector2.new(options.avatarSize/2, 0)
-        end
-    elseif self.avatar then
-        self.avatar.Visible = false
-    end
-    
-   
-    if enabled and onScreen and options.heldItem then
-        local character = self.character
-        local rightHand = character:FindFirstChild("RightHand") or character:FindFirstChild("Right Arm")
-        
-        if rightHand and not self.heldItem then
-            self.heldItem = self:_create("Text", {
-                Visible = false,
-                Center = true,
-                Size = interface.sharedSettings.textSize,
-                Font = interface.sharedSettings.textFont
-            })
-        end
-        
-        if self.heldItem then
-            local item = ""
-            for _, tool in ipairs(self.player.Character:GetChildren()) do
-                if tool:IsA("Tool") then
-                    item = tool.Name
-                    break
-                end
-            end
-            
-            if item ~= "" then
-                local handPos = worldToScreen((rightHand.CFrame * options.heldItemOffset).Position)
-                self.heldItem.Text = item
-                self.heldItem.Position = handPos
-                self.heldItem.Color = parseColor(self, options.heldItemColor[1])
-                self.heldItem.Visible = true
-            else
-                self.heldItem.Visible = false
-            end
-        end
-    elseif self.heldItem then
-        self.heldItem.Visible = false
-    end
-    
-    -- Следы шагов
-    if enabled and options.footsteps then
-        local rootPart = character:FindFirstChild("HumanoidRootPart")
-        if rootPart and (self.lastStepPosition == nil or (rootPart.Position - self.lastStepPosition).Magnitude > 3) then
-            drawFootstep(rootPart.Position)
-            self.lastStepPosition = rootPart.Position
-        end
-    end
+	
 end
 
 -- cham object
@@ -905,6 +785,6 @@ function EspInterface.getHealth(player)
 end
 
 
-runService.Heartbeat:Connect(updateFootsteps)
+
 
 return EspInterface;
