@@ -1,14 +1,3 @@
---[[
-
-ArrayField Interface Suite
-by Arrays
-
-Original by Sirius
-
--------------------------------
-Arrays  | Designing + Programming + New Features
-
-]]
 
 
 
@@ -129,7 +118,7 @@ if game["Run Service"]:IsStudio() then
 end
 
 pcall(function()
-_G.LastRayField.Name = 'Old Arrayfield'
+_G.LastRayField.Name = 'Old'
 _G.LastRayField.Enabled = false
 end)
 local ParentObject = function(Gui)
@@ -1110,10 +1099,10 @@ function RayfieldLibrary:CreateWindow(Settings)
 	LoadingFrame.Subtitle.TextTransparency = 1
 	Main.Shadow.Image.ImageTransparency = 1
 	LoadingFrame.Version.TextTransparency = 1
-	LoadingFrame.Title.Text = Settings.LoadingTitle or "Arrayfield Interface Suite"
-	LoadingFrame.Subtitle.Text = Settings.LoadingSubtitle or "by Sirius | Meta"
-	if Settings.LoadingTitle ~= "Arrayfield Interface Suite" then
-		LoadingFrame.Version.Text = "Arrayfield UI"
+	LoadingFrame.Title.Text = Settings.LoadingTitle or "Welcome to Onyx Hub"
+	LoadingFrame.Subtitle.Text = Settings.LoadingSubtitle or "by Actor"
+	if Settings.LoadingTitle ~= "Onyx Hub" then
+		LoadingFrame.Version.Text = "Onyx UI"
 	end
 	Topbar.Visible = false
 	Elements.Visible = false
