@@ -1,4 +1,4 @@
 local ALLOWED_PLAYERS = {
-    ["OnyxHubBest"] = true
+    ["kebrbdkspeha7"] = true
 }
 return ALLOWED_PLAYERS
