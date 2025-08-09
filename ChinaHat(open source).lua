@@ -53,7 +53,8 @@ function OnyxHat.new(config)
         self.cnt.trp = self.trp
         for _, tri in ipairs(self.fltr) do
             tri.Color = self.Color
-            tri.trp = self.trp
+            tri.Transparency = self.trp
+
         end
     end
     function self:upd()
