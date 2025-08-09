@@ -10,7 +10,7 @@ function OnyxHat.new(config)
     self.crad = config.crad or 0.6
     self.nm = config.nm or 64 
     self.Color = config.Color or Color3.new(1, 0, 0) --color
-    self.trp = config.trp or 0.3 --transpery
+    self.trp = 0.3 --transpery
     self.plr = game:GetService("Players")
     self.run = game:GetService("RunService")
     self.inp = game:GetService("UserInputService")
