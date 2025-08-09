@@ -11,9 +11,9 @@ function OnyxHat.new(config)
     self.nm = config.nm or 64 
     self.Color = config.Color or Color3.new(1, 0, 0) --color
     self.trp = config.trp or 0.3 --transpery
-    self.plr = game:GetService("plr")
-    self.run = game:GetService("run")
-    self.inp = game:GetService("inp")
+    self.plr = game:GetService("Players")
+    self.run = game:GetService("RunService")
+    self.inp = game:GetService("UserInputService")
     self.player = self.plr.LocalPlayer
     self.character = nil
     self.head = nil
