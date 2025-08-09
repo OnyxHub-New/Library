@@ -44,6 +44,7 @@ function OnyxHat.new(config)
         end
         for i, tri in ipairs(self.fltr) do
             if tri then
+                tri.Visible = false
                 tri:Remove()
             end
         end
@@ -54,21 +55,23 @@ function OnyxHat.new(config)
     function self:updv()
         if not self.cnt then return end
         self.cnt.Color = self.Color
-        self.cnt.trp = self.trp
+        self.cnt.Transparency = self.trp
         for _, tri in ipairs(self.fltr) do
             tri.Color = self.Color
             tri.Transparency = self.trp
-
         end
     end
     function self:upd()
         if not self.enb then return end
         if not self.cnt or not self.character or not self.head then 
-            if self.cnt then self.cnt.Visible = false end
-            for _, tri in ipairs(self.fltr) do tri.Visible = false end
+            if self.cnt then 
+                self.cnt.Visible = false 
+            end
+            for _, tri in ipairs(self.fltr) do 
+                tri.Visible = false 
+            end
             return 
         end
-        if not self.cnt or not self.head then return end
         local camera = workspace.CurrentCamera
         if not camera then return end
         local basePosition = self.head.Position + Vector3.new(0, self.heigh, 0)
@@ -77,7 +80,9 @@ function OnyxHat.new(config)
         local topScreenPos, topVisible = camera:WorldToViewportPoint(topPosition)
         if not (baseVisible and topVisible) then
             self.cnt.Visible = false
-            for _, tri in ipairs(self.fltr) do tri.Visible = false end
+            for _, tri in ipairs(self.fltr) do 
+                tri.Visible = false 
+            end
             return
         end
         local center2D = Vector2.new(baseScreenPos.X, baseScreenPos.Y)
@@ -120,27 +125,20 @@ function OnyxHat.new(config)
         if humanoid then
             table.insert(self.connections, humanoid.Died:Connect(function()
                 clear()
-                self.character = nil
-                self.head = nil
             end))
-            
             table.insert(self.connections, humanoid.Running:Connect(function(state)
                 if state == Enum.HumanoidStateType.Dead then
                     clear()
-                    self.character = nil
-                    self.head = nil
                 end
             end))
         end
         table.insert(self.connections, self.character.ChildAdded:Connect(function(child)
             if child:IsA("Humanoid") then
-                child.Running:Connect(function(state)
+                table.insert(self.connections, child.Running:Connect(function(state)
                     if state == Enum.HumanoidStateType.Dead then
                         clear()
-                    else
-                        init()
                     end
-                end)
+                end))
             end
         end))
         init()
@@ -148,10 +146,13 @@ function OnyxHat.new(config)
     function self:Start()
         if self.active then return end
         self.active = true
+        clear()
         if self.player.Character then
             setup(self.player.Character)
         end
-        table.insert(self.connections, self.player.CharacterAdded:Connect(setup))
+        table.insert(self.connections, self.player.CharacterAdded:Connect(function(character)
+            setup(character)
+        end))
         table.insert(self.connections, self.run.RenderStepped:Connect(function()
             if self.enb and self.character and self.head then
                 self:upd()
@@ -176,11 +177,10 @@ function OnyxHat.new(config)
     function self:Setenb(state)
         self.enb = state
         if not state then
-            if self.cnt then
-                self.cnt.Visible = false
-            end
-            for _, tri in ipairs(self.fltr) do
-                tri.Visible = false
+            clear()
+        else
+            if self.player.Character and not self.character then
+                setup(self.player.Character)
             end
         end
     end
@@ -196,5 +196,4 @@ function OnyxHat.new(config)
     return self
 end
 
-return OnyxHat 
--- join in my telegram channel - t.me/OnyxHub
+return OnyxHat
