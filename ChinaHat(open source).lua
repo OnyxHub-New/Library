@@ -21,10 +21,6 @@ function OnyxHat.new(config)
     self.fltr = {}
     self.connections = {}
     self.active = false
-    self.gradientEnabled = config.gradientEnabled or false
-    self.gradientColors = config.gradientColors or {Color3.new(1,0,0), Color3.new(0,1,0)}
-    self.rgbEnabled = config.rgbEnabled or false
-    self.rgbSpeed = config.rgbSpeed or 1
     local function init()
         if not self.enb then return end
         self.cnt = Drawing.new("Circle")
@@ -47,9 +43,13 @@ function OnyxHat.new(config)
             self.cnt = nil
         end
         for i, tri in ipairs(self.fltr) do
-            tri:Remove()
+            if tri then
+                tri:Remove()
+            end
         end
         self.fltr = {}
+        self.character = nil
+        self.head = nil
     end
     function self:updv()
         if not self.cnt then return end
@@ -61,21 +61,13 @@ function OnyxHat.new(config)
 
         end
     end
-    local function getRGBColor(time)
-        if not self.rgbEnabled then return self.Color end
-        local r = (math.sin(time * self.rgbSpeed) + 1) / 2
-        local g = (math.sin(time * self.rgbSpeed + 2) + 1) / 2
-        local b = (math.sin(time * self.rgbSpeed + 4) + 1) / 2
-        return Color3.new(r, g, b)
-    end
-    local function getGradientColor(heightRatio)
-        if not self.gradientEnabled then return self.Color end
-        local color1 = self.gradientColors[1]
-        local color2 = self.gradientColors[2]
-        return color1:Lerp(color2, heightRatio)
-    end
     function self:upd()
         if not self.enb then return end
+        if not self.cnt or not self.character or not self.head then 
+            if self.cnt then self.cnt.Visible = false end
+            for _, tri in ipairs(self.fltr) do tri.Visible = false end
+            return 
+        end
         if not self.cnt or not self.head then return end
         local camera = workspace.CurrentCamera
         if not camera then return end
@@ -101,15 +93,6 @@ function OnyxHat.new(config)
             circlePositions[i] = Vector2.new(pointPos.X, pointPos.Y)
         end
         local triIndex = 1
-        local currentTime = tick()
-        local baseColor = getRGBColor(currentTime)
-        self.cnt.Color = baseColor
-        for i = 1, self.nm do
-            local heightRatio = i / self.nm
-            local triangleColor = getGradientColor(heightRatio)
-            self.fltr[i].Color = triangleColor
-            self.fltr[i + self.nm].Color = triangleColor
-        end
         for i = 1, self.nm do
             local next_i = i % self.nm + 1
             self.fltr[triIndex].PointA = center2D
@@ -130,22 +113,6 @@ function OnyxHat.new(config)
             self.fltr[i].Visible = false
         end
     end
-    function self:SetGradientEnabled(state)
-        self.gradientEnabled = state
-        self:updv()
-    end
-    function self:SetGradientColors(colors)
-        self.gradientColors = colors
-        self:updv()
-    end
-    function self:SetRGBEnabled(state)
-        self.rgbEnabled = state
-        self:updv()
-    end
-    function self:SetRGBSpeed(speed)
-        self.rgbSpeed = speed
-        self:updv()
-    end
     local function setup(newCharacter)
         self.character = newCharacter
         self.head = self.character:WaitForChild("Head")
@@ -153,11 +120,15 @@ function OnyxHat.new(config)
         if humanoid then
             table.insert(self.connections, humanoid.Died:Connect(function()
                 clear()
+                self.character = nil
+                self.head = nil
             end))
             
             table.insert(self.connections, humanoid.Running:Connect(function(state)
                 if state == Enum.HumanoidStateType.Dead then
                     clear()
+                    self.character = nil
+                    self.head = nil
                 end
             end))
         end
