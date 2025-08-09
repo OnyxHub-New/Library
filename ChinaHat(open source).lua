@@ -1,16 +1,16 @@
 local OnyxHat = {}
-
+--modify config
 function OnyxHat.new(config)
     local self = {}
     config = config or {}
-    self.enb = config.enb ~= false
-    self.heigh = config.heigh or 0.9
+    self.enb = config.enb ~= false --def = false
+    self.heigh = config.heigh or 0.9 --size
     self.cheigh = config.cheigh or 0.8
-    self.rad = config.rad or 1.8
+    self.rad = config.rad or 1.8 --radius
     self.crad = config.crad or 0.6
     self.nm = config.nm or 64 
-    self.Color = config.Color or Color3.new(1, 0, 0)
-    self.trp = config.trp or 0.3
+    self.Color = config.Color or Color3.new(1, 0, 0) --color
+    self.trp = 0.3 --transpery
     self.plr = game:GetService("Players")
     self.run = game:GetService("RunService")
     self.inp = game:GetService("UserInputService")
@@ -21,15 +21,10 @@ function OnyxHat.new(config)
     self.fltr = {}
     self.connections = {}
     self.active = false
-    self.useGradient = config.useGradient or false
-    self.useRGB = config.useRGB or false
+    self.gradientEnabled = config.gradientEnabled or false
+    self.gradientColors = config.gradientColors or {Color3.new(1,0,0), Color3.new(0,1,0)}
+    self.rgbEnabled = config.rgbEnabled or false
     self.rgbSpeed = config.rgbSpeed or 1
-    self.gradientColors = config.gradientColors or {
-        Color3.new(1, 0, 0),
-        Color3.new(0, 1, 0),
-        Color3.new(0, 0, 1)
-    }
-    self.rgbHue = 0
     local function init()
         if not self.enb then return end
         self.cnt = Drawing.new("Circle")
@@ -56,32 +51,28 @@ function OnyxHat.new(config)
         end
         self.fltr = {}
     end
-    function self:updateRGB()
-        if not self.useRGB then return end
-        self.rgbHue = (self.rgbHue + 0.01 * self.rgbSpeed) % 1
-        self.Color = Color3.fromHSV(self.rgbHue, 1, 1)
-    end
-    function self:getGradientColor(index, total)
-        if not self.useGradient then return self.Color end
-        local colorCount = #self.gradientColors
-        if colorCount == 0 then return self.Color end
-        if colorCount == 1 then return self.gradientColors[1] end
-        local position = (index / total) % 1
-        local colorIndex = math.floor(position * (colorCount - 1)) + 1
-        local alpha = (position * (colorCount - 1)) % 1
-        local color1 = self.gradientColors[colorIndex]
-        local color2 = self.gradientColors[colorIndex % colorCount + 1]
-        return Color3.new(
-            color1.R + (color2.R - color1.R) * alpha,
-            color1.G + (color2.G - color1.G) * alpha,
-            color1.B + (color2.B - color1.B) * alpha
-        )
-    end
     function self:updv()
         if not self.cnt then return end
-        self:updateRGB()
         self.cnt.Color = self.Color
-        self.cnt.Transparency = self.trp
+        self.cnt.trp = self.trp
+        for _, tri in ipairs(self.fltr) do
+            tri.Color = self.Color
+            tri.Transparency = self.trp
+
+        end
+    end
+    local function getRGBColor(time)
+        if not self.rgbEnabled then return self.Color end
+        local r = (math.sin(time * self.rgbSpeed) + 1) / 2
+        local g = (math.sin(time * self.rgbSpeed + 2) + 1) / 2
+        local b = (math.sin(time * self.rgbSpeed + 4) + 1) / 2
+        return Color3.new(r, g, b)
+    end
+    local function getGradientColor(heightRatio)
+        if not self.gradientEnabled then return self.Color end
+        local color1 = self.gradientColors[1]
+        local color2 = self.gradientColors[2]
+        return color1:Lerp(color2, heightRatio)
     end
     function self:upd()
         if not self.enb then return end
@@ -110,13 +101,20 @@ function OnyxHat.new(config)
             circlePositions[i] = Vector2.new(pointPos.X, pointPos.Y)
         end
         local triIndex = 1
+        local currentTime = tick()
+        local baseColor = getRGBColor(currentTime)
+        self.cnt.Color = baseColor
+        for i = 1, self.nm do
+            local heightRatio = i / self.nm
+            local triangleColor = getGradientColor(heightRatio)
+            self.fltr[i].Color = triangleColor
+            self.fltr[i + self.nm].Color = triangleColor
+        end
         for i = 1, self.nm do
             local next_i = i % self.nm + 1
             self.fltr[triIndex].PointA = center2D
             self.fltr[triIndex].PointB = circlePositions[i]
             self.fltr[triIndex].PointC = circlePositions[next_i]
-            self.fltr[triIndex].Color = self:getGradientColor(i, self.nm)
-            self.fltr[triIndex].Transparency = self.trp
             self.fltr[triIndex].Visible = self.enb
             triIndex = triIndex + 1
         end
@@ -125,14 +123,28 @@ function OnyxHat.new(config)
             self.fltr[triIndex].PointA = top2D
             self.fltr[triIndex].PointB = circlePositions[i]
             self.fltr[triIndex].PointC = circlePositions[next_i]
-            self.fltr[triIndex].Color = self:getGradientColor(i, self.nm)
-            self.fltr[triIndex].Transparency = self.trp
             self.fltr[triIndex].Visible = self.enb
             triIndex = triIndex + 1
         end
         for i = triIndex, #self.fltr do
             self.fltr[i].Visible = false
         end
+    end
+    function self:SetGradientEnabled(state)
+        self.gradientEnabled = state
+        self:updv()
+    end
+    function self:SetGradientColors(colors)
+        self.gradientColors = colors
+        self:updv()
+    end
+    function self:SetRGBEnabled(state)
+        self.rgbEnabled = state
+        self:updv()
+    end
+    function self:SetRGBSpeed(speed)
+        self.rgbSpeed = speed
+        self:updv()
     end
     local function setup(newCharacter)
         self.character = newCharacter
@@ -142,6 +154,7 @@ function OnyxHat.new(config)
             table.insert(self.connections, humanoid.Died:Connect(function()
                 clear()
             end))
+            
             table.insert(self.connections, humanoid.Running:Connect(function(state)
                 if state == Enum.HumanoidStateType.Dead then
                     clear()
@@ -208,20 +221,9 @@ function OnyxHat.new(config)
         self.trp = newtrp
         self:updv()
     end
-    function self:SetGradient(state, colors)
-        self.useGradient = state
-        if colors then
-            self.gradientColors = colors
-        end
-    end
-    function self:SetRGB(state, speed)
-        self.useRGB = state
-        if speed then
-            self.rgbSpeed = speed
-        end
-    end
     self:Start()
     return self
 end
 
-return OnyxHat
+return OnyxHat 
+-- join in my telegram channel - t.me/OnyxHub
