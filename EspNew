@@ -698,18 +698,22 @@ function EspInterface.Unload()
 end
 
 -- game specific functions
-local typeof
-local FindFirstChildOfClass = function(self, ...)
-	return typeof(self) == "Instance" and self.FindFirstChildOfClass(self, ...)
-end
 function EspInterface.getWeapon(player)
-    local Players = game:GetService("Players")
-    local Player = Players.LocalPlayer
-    local character = player.Character
+    local character = player and EspInterface.getCharacter(player);
     if not character then return "Unknown" end
     
-    local tool = FindFirstChildOfClass(character, "Tool")
-    return tool and tool.Name or "None"
+    local humanoid = findFirstChildOfClass(character, "Humanoid");
+    if not humanoid then return "Unknown" end
+    
+    local tool = humanoid:FindFirstChildOfClass("Tool");
+    if not tool then
+        local rightHand = character:FindFirstChild("RightHand") or character:FindFirstChild("Right Arm");
+        if rightHand and #rightHand:GetChildren() > 0 then
+            tool = rightHand:FindFirstChildOfClass("Tool") or rightHand:FindFirstChildWhichIsA("BasePart");
+        end
+    end
+    
+    return tool and tool.Name or "Fists";
 end
 
 function EspInterface.isFriendly(player)
