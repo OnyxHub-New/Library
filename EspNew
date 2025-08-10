@@ -703,7 +703,9 @@ local FindFirstChildOfClass = function(self, ...)
 	return typeof(self) == "Instance" and self.FindFirstChildOfClass(self, ...)
 end
 function EspInterface.getWeapon(player)
-    local character = player and EspInterface.getCharacter(player)
+    local Players = game:GetService("Players")
+    local Player = Players.LocalPlayer
+    local character = player.Character
     if not character then return "Unknown" end
     
     local tool = FindFirstChildOfClass(character, "Tool")
