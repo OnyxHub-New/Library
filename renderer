@@ -1,62 +1,57 @@
-local RunService = game:GetService("RunService")
-return function(FrameCount, lfps, lping, Stats, FpsText, PingText, skltenb, updsket, ArrowSettings, updar, aim, UserInputService, mouseon, shoot, trgind, prfind, lastTarget, updt, updp, autor, weapon, chm)
-    local update = RunService.RenderStepped:Connect(function()
+local visualUpdateFunc = function(FrameCount, lfps, lping, Stats, FpsText, PingText, skltenb, updsket, ArrowSettings, updar, aim, UserInputService, mouseon, shoot, trgind, prfind, lastTarget, updt, updp, autor, weapon, chm)
+    return RunService.RenderStepped:Connect(function()
         FrameCount = FrameCount + 1
         local now = tick()
+
         if now - lfps >= 0.5 then
             local fps = math.floor(FrameCount / (now - lfps))
             FpsText.Text = "FPS: " .. fps
             FrameCount = 0
             lfps = now
         end
-        
+
         if now - lping >= 2 then
-            local pingStat = Stats.Network.ServerStatsItem:FindFirstChild("Data Ping") 
-                          or Stats.Network.ServerStatsItem:FindFirstChild("Ping")
+            local pingStat = Stats.Network.ServerStatsItem:FindFirstChild("Data Ping") or 
+                            Stats.Network.ServerStatsItem:FindFirstChild("Ping")
             if pingStat then
                 PingText.Text = "Ping: " .. math.floor(pingStat:GetValue()) .. "ms"
             end
             lping = now
         end
-
         if skltenb then
-            updsket()
+            pcall(updsket)
         end
 
         if ArrowSettings.Enabled then
-            updar()
+            pcall(updar)
         end
 
         if aim.silen and aim.bindm == "Mouse" and mouseon then
             pcall(shoot)
         end
+
         if trgind.Enabled or prfind.Enabled then
             local trg = aim.rageAimTarget or lastTarget
-            updt(trg)
-            updp(trg)
+            pcall(updt, trg)
+            pcall(updp, trg)
         end
+
         if aim.silen and aim.autosh and (tick() - aim.lstsh) >= aim.inter then
             local success, shotFired = pcall(shoot)
             if success and shotFired then
                 aim.lstsh = tick()
             end
         end
+
         if aim.autor then
             pcall(autor)
         end
-        if weapon.rpd then
+        if weapon.rpd or weapon.nodel or weapon.infm then
             pcall(chm)
         end
-        if weapon.nodel then
-            pcall(chm)
-        end
-        if weapon.infm then
-            pcall(chm)
-        end
+
         if aim.fovCircle and aim.fovCircle.Visible and aim.fovType == "Mouse" then
             aim.fovCircle.Position = UserInputService:GetMouseLocation()
         end
     end)
-    
-    return update
 end
