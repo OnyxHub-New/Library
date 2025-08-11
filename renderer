@@ -1,3 +1,4 @@
+local RunService = game:GetService("RunService")
 return function(FrameCount, lfps, lping, Stats, FpsText, PingText, skltenb, updsket, ArrowSettings, updar, aim, UserInputService, mouseon, shoot, trgind, prfind, lastTarget, updt, updp, autor, weapon, chm)
     local update = RunService.RenderStepped:Connect(function()
         FrameCount = FrameCount + 1
