@@ -34,8 +34,7 @@ function Console:Window(consoledebugger)
     local AutoScroll_Locked_InnerUICorner = Instance.new("UICorner")
     local AutoScroll_Locked_Title = Instance.new("TextLabel")
     local AutoScroll_Locked_Title_2 = Instance.new("TextLabel")
-    
-    -- Добавленные элементы для кнопки Start Session
+
     local StartSessionButton = Instance.new("TextButton")
     local StartSessionButtonUICorner = Instance.new("UICorner")
     
