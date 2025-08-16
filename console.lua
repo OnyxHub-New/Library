@@ -5722,13 +5722,50 @@ do
             end
             dropdown.refresh = dropdown.setOptions
             
-            dropdown.addOption = function(self) 
-            
-            end
-            
-            dropdown.removeOption = function(self) 
-            
-            end
+            dropdown.addOption = function(self, optionText)
+				local option = Instance.new("TextButton")
+				option.Name = "Option_"..optionText
+				option.Text = optionText
+				option.Size = UDim2.new(1, 0, 0, 20)
+				option.BackgroundColor3 = theme.Button1
+				option.TextColor3 = theme.TextPrimary
+				option.AutoButtonColor = false
+				option.ZIndex = 35
+			
+				
+				option.MouseEnter:Connect(function()
+					tween(option, {BackgroundColor3 = theme.Button2}, 0.2, 1)
+				end)
+			
+		
+				option.MouseLeave:Connect(function()
+					tween(option, {BackgroundColor3 = theme.Button1}, 0.2, 1)
+				end)
+			
+
+				option.MouseButton1Click:Connect(function()
+					self.instances.label.Text = optionText  
+					self:close()  
+					self:fireEvent('optionSelected', optionText)  
+				end)
+			
+				option.Parent = self.instances.menu
+				table.insert(self.options, option)
+			
+			
+				self.instances.menu.CanvasSize = UDim2.new(0, 0, 0, #self.options * 24)
+			end
+			
+			dropdown.removeOption = function(self, optionText)
+				for i, option in ipairs(self.options) do
+					if option.Text == optionText then
+						option:Destroy()
+						table.remove(self.options, i)
+						break
+					end
+				end
+				self.instances.menu.CanvasSize = UDim2.new(0, 0, 0, #self.options * 24)
+			end
             
             
             
@@ -5806,22 +5843,27 @@ do
             
             
             elemClasses.section.addDropdown = function(self, settings) 
-                if (not typeof(settings) == 'table') then
-                    return error('expected type table for settings', 2) 
-                end
-                
-                local s_title = settings.text or 'nil'
-                local s_options = settings.options or {}
-                
-                local new = dropdown:new()
-                new.section = self 
-                new.name = s_title
-                table.insert(self.controls, new)
-                
-                new.instances.label.Text = s_title
-                new.instances.controlFrame.Parent = self.instances.controlMenu
-                return new
-            end
+				if (not typeof(settings) == 'table') then
+					return error('expected type table for settings', 2) 
+				end
+				
+				local s_title = settings.text or 'nil'
+				local s_options = settings.options or {}
+				
+				local new = dropdown:new()
+				new.section = self 
+				new.name = s_title
+				table.insert(self.controls, new)
+				
+				new.instances.label.Text = s_title
+
+				for _, option in ipairs(s_options) do
+					new:addOption(option)
+				end
+				
+				new.instances.controlFrame.Parent = self.instances.controlMenu
+				return new
+			end
         end
 
         elemClasses.dropdown = dropdown
