@@ -5239,141 +5239,8 @@ do
         -- add class
         label.section = section
     end
-    -- DROPDOWN
-	do
-		local dropdown = {}
-		dropdown.__index = dropdown
-		setmetatable(dropdown, elemClasses.baseElement)
+    
 
-		dropdown.class = 'dropdown'
-
-		do
-			local instances = {} do
-				local controlFrame = Instance.new('Frame')
-				controlFrame.BackgroundTransparency = 1
-				controlFrame.Name = '#control'
-				controlFrame.Size = UDim2.new(1, 0, 0, 20)
-				controlFrame.Visible = true
-				controlFrame.ZIndex = 34
-				
-				instances.controlFrame = controlFrame
-
-				local mainButton = Instance.new('TextButton') do
-					mainButton.BackgroundColor3 = theme.Button1
-					mainButton.Name = '#main-button'
-					mainButton.Size = UDim2.fromScale(1, 1)
-					mainButton.Text = 'Select option'
-					mainButton.TextColor3 = theme.TextPrimary
-					mainButton.TextSize = 14
-					mainButton.ZIndex = 35
-					
-					mainButton.Parent = controlFrame
-					
-					local round = Instance.new('UICorner') do
-						round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-						round.Name = '#round'
-						round.Parent = mainButton
-					end
-					
-					local stroke = Instance.new('UIStroke') do
-						stroke.Color = theme.Stroke
-						stroke.Thickness = 1
-						stroke.Parent = mainButton
-					end
-				end
-
-				local optionsFrame = Instance.new('Frame') do
-					optionsFrame.BackgroundColor3 = theme.Window2
-					optionsFrame.BorderColor3 = theme.Inset2
-					optionsFrame.Position = UDim2.fromOffset(0, 22)
-					optionsFrame.Size = UDim2.new(1, 0, 0, 0)
-					optionsFrame.Visible = false
-					optionsFrame.ZIndex = 40
-					
-					optionsFrame.Parent = controlFrame
-					
-					local layout = Instance.new('UIListLayout') do
-						layout.Padding = UDim.new(0, 2)
-						layout.Parent = optionsFrame
-					end
-				end
-			end
-			dropdown.instances = instances
-		end
-
-		dropdown.options = {}
-		dropdown.selected = nil
-		dropdown.open = false
-
-		dropdown.addOption = function(self, text, value)
-			local optionButton = Instance.new('TextButton')
-			optionButton.BackgroundColor3 = theme.Button1
-			optionButton.Size = UDim2.new(1, 0, 0, 20)
-			optionButton.Text = text
-			optionButton.TextColor3 = theme.TextPrimary
-			optionButton.ZIndex = 41
-			
-			optionButton.MouseButton1Click:Connect(function()
-				self.selected = value or text
-				self.instances.mainButton.Text = text
-				self:toggle()
-				self:fireEvent('optionSelected', value or text)
-			end)
-			
-			optionButton.Parent = self.instances.optionsFrame
-			table.insert(self.options, {text = text, value = value or text})
-			
-			-- Update options frame size
-			self.instances.optionsFrame.Size = UDim2.new(1, 0, 0, #self.options * 22)
-		end
-
-		dropdown.toggle = function(self)
-			self.open = not self.open
-			self.instances.optionsFrame.Visible = self.open
-			
-			if self.open then
-				tween(self.instances.mainButton, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-			else
-				tween(self.instances.mainButton, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-			end
-		end
-
-		dropdown.new = function(self, settings)
-			local new = setmetatable({}, self)
-			new.binds = {}
-			new.options = {}
-			
-			local instances = {}
-			instances.controlFrame = self.instances.controlFrame:Clone()
-			instances.mainButton = instances.controlFrame['#main-button']
-			instances.optionsFrame = instances.controlFrame['#options-frame'] or instances.controlFrame:FindFirstChildOfClass('Frame')
-			
-			if settings.text then
-				instances.mainButton.Text = settings.text
-			end
-			
-			instances.mainButton.MouseButton1Click:Connect(function()
-				new:toggle()
-			end)
-			
-			new.instances = instances
-			return new
-		end
-
-		elemClasses.dropdown = dropdown
-
-		elemClasses.section.addDropdown = function(self, settings)
-			local dropdown = elemClasses.dropdown:new(settings)
-			dropdown.section = self
-			table.insert(self.controls, dropdown)
-			
-			dropdown.instances.controlFrame.Parent = self.instances.controlMenu
-			return dropdown
-		end
-	end
-    -- Unfinished
-    -- DROPDOWN OPTION
-    --[[
     do 
         local dropdownOption = {} do 
             dropdownOption.__index = dropdownOption 
@@ -5629,11 +5496,9 @@ do
         end
         -- add class
         elemClasses.dropdownOption = dropdownOption
-    end]]
+    end
 
-    -- Unfinished
-    -- DROPDOWN
-    --[[
+    
     do 
         local dropdown = {} do 
             dropdown.__index = dropdown 
@@ -5958,10 +5823,10 @@ do
                 return new
             end
         end
-        -- add class
+
         elemClasses.dropdown = dropdown
     end    
-    ]]
+    
 
     -- SLIDER
     do 
