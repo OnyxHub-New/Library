@@ -1209,7 +1209,7 @@ local function getObjGen()
             Gui.Watermark.BackgroundTransparency = 1.000
             Gui.Watermark.Size = UDim2.new(0.5, 0, 0.0199999996, 0)
             Gui.Watermark.Font = Enum.Font.Gotham
-            Gui.Watermark.Text = "Onyx Hub | nil | nil"
+            Gui.Watermark.Text = "hydrahub v2 | nil | nil"
             Gui.Watermark.TextColor3 = Color3.fromRGB(255, 255, 255)
             Gui.Watermark.TextSize = 14.000
             Gui.Watermark.TextStrokeTransparency = 0.800
@@ -2501,7 +2501,7 @@ local function getObjGen()
 
             Gui.UIAspectRatioConstraint_17.Parent = Gui.Main_2
             Gui.UIAspectRatioConstraint_17.AspectRatio = 2.788
-            
+
             return Gui.UIObjects
         end
 
@@ -2537,37 +2537,6 @@ local function getObjGen()
 end
 
 local objectGenerator = getObjGen()
-
-
-local toggleButton = objectGenerator.new("Button")
-toggleButton.Name = "ToggleMenuButton"
-toggleButton.Size = UDim2.new(0, 50, 0, 50)
-toggleButton.Position = UDim2.new(0, 20, 0.5, -25)
-toggleButton.ZIndex = 1000
-
-
-local buttonImage = Instance.new("ImageLabel")
-buttonImage.Name = "Icon"
-buttonImage.Image = "rbxassetid://10723407389"
-buttonImage.BackgroundTransparency = 1
-buttonImage.Size = UDim2.new(0.8, 0, 0.8, 0)
-buttonImage.Position = UDim2.new(0.1, 0, 0.1, 0)
-buttonImage.ZIndex = toggleButton.ZIndex + 1
-buttonImage.Parent = toggleButton
-
-
-local dragIt = getDragIt()
-dragIt.Drag(toggleButton, toggleButton, nil, nil, false, 0.5)
-
-local function toggleMenu()
-    if UILibrary.MainUI.Visible then
-        UILibrary.MainUI.Visible = false
-    else
-        UILibrary.MainUI.Visible = true
-    end
-end
-
-toggleButton.MouseButton1Click:Connect(toggleMenu)
 
 
 local function initUtils()
@@ -3296,7 +3265,7 @@ function UILibrary.new(gameName, userId, rank)
     local Drag = Draggable.Drag(window.MainUI, Frame)
 
     --// Customize the GUI
-    window.Watermark.Text = ("onyx hub | %s | %s"):format(userId, gameName)
+    window.Watermark.Text = ("hydrahub v2 | %s | %s"):format(userId, gameName)
     local userinfo = window.MainUI.Sidebar.ContentHolder.UserInfo.Content
     userinfo.Rank.Text = rank
     userinfo.Title.Text = userId
@@ -5549,5 +5518,35 @@ function UILibrary.Section:Dropdown(sett, callback)
     return meta
 end
 
+local toggleButton = objectGenerator.new("Button")
+toggleButton.Name = "ToggleMenuButton"
+toggleButton.Size = UDim2.new(0, 50, 0, 50)
+toggleButton.Position = UDim2.new(0, 20, 0.5, -25)
+toggleButton.ZIndex = 1000
+
+
+local buttonImage = Instance.new("ImageLabel")
+buttonImage.Name = "Icon"
+buttonImage.Image = "rbxassetid://10723407389"
+buttonImage.BackgroundTransparency = 1
+buttonImage.Size = UDim2.new(0.8, 0, 0.8, 0)
+buttonImage.Position = UDim2.new(0.1, 0, 0.1, 0)
+buttonImage.ZIndex = toggleButton.ZIndex + 1
+buttonImage.Parent = toggleButton
+
+
+local dragIt = getDragIt()
+dragIt.Drag(toggleButton, toggleButton, nil, nil, false, 0.5)
+
+
+local function toggleMenu()
+    if UILibrary.MainUI.Visible then
+        UILibrary.MainUI.Visible = false
+    else
+        UILibrary.MainUI.Visible = true
+    end
+end
+
+toggleButton.MouseButton1Click:Connect(toggleMenu)
 
 return UILibrary
