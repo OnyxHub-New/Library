@@ -5518,28 +5518,32 @@ function UILibrary.Section:Dropdown(sett, callback)
     return meta
 end
 
-local toggleButton = Instance.new("Button")
-toggleButton.Name = "ToggleMenuButton"
-toggleButton.Size = UDim2.new(0, 50, 0, 50)
-toggleButton.Position = UDim2.new(0, 20, 0.5, -25)
-toggleButton.ZIndex = 1000
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "DraggableButtonGui"
+screenGui.ResetOnSpawn = false
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 
-local buttonImage = Instance.new("ImageLabel")
-buttonImage.Name = "Icon"
-buttonImage.Image = "rbxassetid://10723407389"
-buttonImage.BackgroundTransparency = 1
-buttonImage.Size = UDim2.new(0.8, 0, 0.8, 0)
-buttonImage.Position = UDim2.new(0.1, 0, 0.1, 0)
-buttonImage.ZIndex = toggleButton.ZIndex + 1
-buttonImage.Parent = toggleButton
+local button = Instance.new("ImageButton")
+button.Name = "ToggleUIButton"
+button.Image = "rbxassetid://10723407389"
+button.BackgroundTransparency = 1
+button.Size = UDim2.new(0, 50, 0, 50) 
+button.Position = UDim2.new(0, 20, 0.5, -25) 
+button.Active = true
+button.Draggable = true 
+button.Selectable = true
+button.ZIndex = 10
+button.Parent = screenGui
 
 
-local dragIt = getDragIt()
-dragIt.Drag(toggleButton, toggleButton, nil, nil, false, 0.5)
+local touchStartPos, buttonStartPos
+local isDragging = false
 
 
-local function toggleMenu()
+local function toggleUI()
     if UILibrary.MainUI.Visible then
         UILibrary.MainUI.Visible = false
     else
@@ -5547,6 +5551,61 @@ local function toggleMenu()
     end
 end
 
-toggleButton.MouseButton1Click:Connect(toggleMenu)
+
+button.MouseButton1Click:Connect(function()
+    if not isDragging then
+        toggleUI()
+    end
+    isDragging = false
+end)
+
+button.MouseButton1Down:Connect(function()
+    isDragging = false
+end)
+
+
+button.TouchLongPress:Connect(function()
+
+end)
+
+button.TouchStarted:Connect(function(touch)
+    touchStartPos = touch.Position
+    buttonStartPos = button.Position
+    isDragging = false
+end)
+
+button.TouchMoved:Connect(function(touch)
+    local delta = touch.Position - touchStartPos
+    if delta.Magnitude > 5 then
+        isDragging = true
+        button.Position = UDim2.new(
+            buttonStartPos.X.Scale, 
+            buttonStartPos.X.Offset + delta.X,
+            buttonStartPos.Y.Scale,
+            buttonStartPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+button.TouchEnded:Connect(function()
+    if not isDragging then
+        toggleUI()
+    end
+    isDragging = false
+end)
+
+
+button.DragStopped:Connect(function()
+    local viewportSize = workspace.CurrentCamera.ViewportSize
+    
+    local x = button.Position.X.Offset
+    local y = button.Position.Y.Offset
+    
+    x = math.clamp(x, 0, viewportSize.X - button.AbsoluteSize.X)
+
+    y = math.clamp(y, 0, viewportSize.Y - button.AbsoluteSize.Y)
+    
+    button.Position = UDim2.new(0, x, 0, y)
+end)
 
 return UILibrary
