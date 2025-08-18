@@ -5518,6 +5518,52 @@ function UILibrary.Section:Dropdown(sett, callback)
     return meta
 end
 
+local player = game:GetService("Players").LocalPlayer
+local gui = player:WaitForChild("PlayerGui")
 
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "DragButtonGui"
+screenGui.Parent = gui
+
+-- Create ImageButton
+local button = Instance.new("ImageButton")
+button.Name = "DragButton"
+button.Image = "rbxassetid://10723407389"
+button.Size = UDim2.new(0, 50, 0, 50) -- Button size 50x50 pixels
+button.Position = UDim2.new(0, 10, 0, 10) -- Default position
+button.BackgroundTransparency = 1 -- Transparent background
+button.Active = true
+button.Draggable = true -- Make the button draggable
+button.Parent = screenGui
+
+-- Function to toggle UI visibility
+local function toggleUI()
+    if UILibrary and UILibrary.MainUI then
+        UILibrary.MainUI.Visible = not UILibrary.MainUI.Visible
+    else
+        warn("UILibrary.MainUI not found!")
+    end
+end
+
+-- Connect function to button
+button.MouseButton1Click:Connect(toggleUI)
+
+-- Optional hover animation
+button.MouseEnter:Connect(function()
+    game:GetService("TweenService"):Create(
+        button,
+        TweenInfo.new(0.1),
+        {Size = UDim2.new(0, 55, 0, 55)}
+    ):Play()
+end)
+
+button.MouseLeave:Connect(function()
+    game:GetService("TweenService"):Create(
+        button,
+        TweenInfo.new(0.1),
+        {Size = UDim2.new(0, 50, 0, 50)}
+    ):Play()
+end)
 
 return UILibrary
