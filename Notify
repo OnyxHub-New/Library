@@ -5518,94 +5518,81 @@ function UILibrary.Section:Dropdown(sett, callback)
     return meta
 end
 
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "DraggableButtonGui"
-screenGui.ResetOnSpawn = false
-screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-
+-- Создаем кнопку
 local button = Instance.new("ImageButton")
-button.Name = "ToggleUIButton"
+button.Name = "DraggableUIButton"
 button.Image = "rbxassetid://10723407389"
 button.BackgroundTransparency = 1
-button.Size = UDim2.new(0, 50, 0, 50) 
-button.Position = UDim2.new(0, 20, 0.5, -25) 
-button.Active = true
-button.Draggable = true 
-button.Selectable = true
-button.ZIndex = 10
+button.Size = UDim2.new(0, 50, 0, 50) -- Небольшой размер (50x50)
+button.AnchorPoint = Vector2.new(0.5, 0.5)
+button.Position = UDim2.new(0.5, 0, 0.7, 0) -- Начальная позиция (центр по X, 70% по Y)
+
+-- Добавляем кнопку в игровой интерфейс
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "DraggableButtonUI"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
 button.Parent = screenGui
 
+-- Переменные для перемещения
+local dragging = false
+local dragStartPos
+local buttonStartPos
 
-local touchStartPos, buttonStartPos
-local isDragging = false
-
-
+-- Функция для обработки нажатия
 local function toggleUI()
-    if UILibrary.MainUI.Visible then
-        UILibrary.MainUI.Visible = false
+    if UILibrary and UILibrary.MainUI then
+        UILibrary.MainUI.Visible = not UILibrary.MainUI.Visible
     else
-        UILibrary.MainUI.Visible = true
+        warn("UILibrary.MainUI не найден!")
     end
 end
 
-
-button.MouseButton1Click:Connect(function()
-    if not isDragging then
-        toggleUI()
+-- Обработчики событий для перемещения
+button.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStartPos = Vector2.new(input.Position.X, input.Position.Y)
+        buttonStartPos = button.Position
     end
-    isDragging = false
 end)
 
-button.MouseButton1Down:Connect(function()
-    isDragging = false
+button.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
 end)
 
-
-button.TouchLongPress:Connect(function()
-
-end)
-
-button.TouchStarted:Connect(function(touch)
-    touchStartPos = touch.Position
-    buttonStartPos = button.Position
-    isDragging = false
-end)
-
-button.TouchMoved:Connect(function(touch)
-    local delta = touch.Position - touchStartPos
-    if delta.Magnitude > 5 then
-        isDragging = true
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = Vector2.new(input.Position.X, input.Position.Y) - dragStartPos
         button.Position = UDim2.new(
-            buttonStartPos.X.Scale, 
-            buttonStartPos.X.Offset + delta.X,
-            buttonStartPos.Y.Scale,
-            buttonStartPos.Y.Offset + delta.Y
+            buttonStartPos.X.Scale, buttonStartPos.X.Offset + delta.X,
+            buttonStartPos.Y.Scale, buttonStartPos.Y.Offset + delta.Y
         )
     end
 end)
 
-button.TouchEnded:Connect(function()
-    if not isDragging then
-        toggleUI()
+-- Обработчик клика (только если не было перемещения)
+local clickStartTime
+local maxClickTime = 0.2 -- Максимальное время для клика (в секундах)
+
+button.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        clickStartTime = os.clock()
     end
-    isDragging = false
 end)
 
-
-button.DragStopped:Connect(function()
-    local viewportSize = workspace.CurrentCamera.ViewportSize
-    
-    local x = button.Position.X.Offset
-    local y = button.Position.Y.Offset
-    
-    x = math.clamp(x, 0, viewportSize.X - button.AbsoluteSize.X)
-
-    y = math.clamp(y, 0, viewportSize.Y - button.AbsoluteSize.Y)
-    
-    button.Position = UDim2.new(0, x, 0, y)
+button.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        local clickDuration = os.clock() - clickStartTime
+        if clickDuration <= maxClickTime then
+            toggleUI()
+        end
+    end
 end)
 
 return UILibrary
