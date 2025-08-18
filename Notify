@@ -5518,7 +5518,7 @@ function UILibrary.Section:Dropdown(sett, callback)
     return meta
 end
 
-local toggleButton = objectGenerator.new("Button")
+local toggleButton = Instance.new("Button")
 toggleButton.Name = "ToggleMenuButton"
 toggleButton.Size = UDim2.new(0, 50, 0, 50)
 toggleButton.Position = UDim2.new(0, 20, 0.5, -25)
