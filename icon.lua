@@ -3249,9 +3249,9 @@ function UILibrary.new(gameName, userId, rank)
     local function toggleMenu()
         menuVisible = not menuVisible
         if menuVisible then
-            TweenService:Create(window.MainUI, TI, {Position = UDim2.fromScale(0.5, 0.5)}):Play()
+            GUI.Visible = false
         else
-            TweenService:Create(window.MainUI, TI, {Position = UDim2.fromScale(1.5, 0.5)}):Play()
+            GUI.Visible = true
         end
     end
     game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
