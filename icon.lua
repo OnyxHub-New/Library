@@ -3246,20 +3246,7 @@ function UILibrary.new(gameName, userId, rank)
 
     local window = objectGenerator.new("Window")
     window.Parent = GUI
-    local function toggleMenu()
-        menuVisible = not menuVisible
-        if menuVisible then
-            GUI.Visible = false
-        else
-            GUI.Visible = true
-        end
-    end
-    game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
-        if gp then return end
-        if input.KeyCode == Enum.KeyCode.M then
-            toggleMenu()
-        end
-    end)
+
     --// make UI draggable
     -->> LogoHitbox
 
@@ -3277,6 +3264,20 @@ function UILibrary.new(gameName, userId, rank)
     Frame.ZIndex = 300
 
     local Drag = Draggable.Drag(window.MainUI, Frame)
+    local function toggleMenu()
+        menuVisible = not menuVisible
+        if menuVisible then
+            window.MainUI.Visible = false
+        else
+            window.MainUI.Visible = true
+        end
+    end
+    game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
+        if gp then return end
+        if input.KeyCode == Enum.KeyCode.M then
+            toggleMenu()
+        end
+    end)
 
     --// Customize the GUI
     window.Watermark.Text = ("hydrahub v2 | %s | %s"):format(userId, gameName)
