@@ -1,12 +1,13 @@
 local UILibrary = {}
 --// Modules
-local Gui
+local menuVisible = true
+
 local function getObjGen()
     local objGen = {}
 
     local function getObjects()
         local function initObj()
-            Gui = {
+            local Gui = {
                 UIObjects = Instance.new("Folder"),
                 Cheats = Instance.new("Folder"),
                 Button = Instance.new("Frame"),
@@ -285,7 +286,7 @@ local function getObjGen()
                 UICorner_23 = Instance.new("UICorner"),
                 UIAspectRatioConstraint_17 = Instance.new("UIAspectRatioConstraint")
             }
-
+ 
             --Properties:
 
             Gui.UIObjects.Name = "UIObjects"
@@ -3245,7 +3246,20 @@ function UILibrary.new(gameName, userId, rank)
 
     local window = objectGenerator.new("Window")
     window.Parent = GUI
-
+    local function toggleMenu()
+        menuVisible = not menuVisible
+        if menuVisible then
+            TweenService:Create(window.MainUI, TI, {Position = UDim2.fromScale(0.5, 0.5)}):Play()
+        else
+            TweenService:Create(window.MainUI, TI, {Position = UDim2.fromScale(1.5, 0.5)}):Play()
+        end
+    end
+    game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
+        if gp then return end
+        if input.KeyCode == Enum.KeyCode.M then
+            toggleMenu()
+        end
+    end)
     --// make UI draggable
     -->> LogoHitbox
 
@@ -5517,32 +5531,5 @@ function UILibrary.Section:Dropdown(sett, callback)
 
     return meta
 end
-local menuVisible = true
 
-
-local function toggleMenuVisibility()
-    menuVisible = not menuVisible
-    Gui.Enabled = menuVisible
-
-    if menuVisible then
-        TweenService:Create(GUI, TI, {GroupTransparency = 0}):Play()
-    else
-        TweenService:Create(GUI, TI, {GroupTransparency = 1}):Play()
-    end
-end
-
-local inputConnection
-inputConnection = game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
-    
-    if input.KeyCode == Enum.KeyCode.M then
-        toggleMenuVisibility()
-    end
-end)
-
-Gui.Destroying:Connect(function()
-    if inputConnection then
-        inputConnection:Disconnect()
-    end
-end)
 return UILibrary
