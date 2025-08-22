@@ -3274,7 +3274,7 @@ function UILibrary.new(gameName, userId, rank)
     end
     game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
         if gp then return end
-        if input.KeyCode == Enum.KeyCode.M then
+        if input.KeyCode == Enum.KeyCode.B then
             toggleMenu()
         end
     end)
