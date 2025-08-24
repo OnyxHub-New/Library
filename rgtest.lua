@@ -1,18 +1,22 @@
 local OnyxHub = {}
 
 OnyxHub.Settings = {
-    OwnerTags = {"OnyxHubLol"}  
+    OwnerTags = {"OnyxHubLol"} 
 }
 
 local TextChatService = game:GetService("TextChatService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local TeleportService = game:GetService("TeleportService")
+local VirtualUser = game:GetService("VirtualUser")
 local localPlayer = Players.LocalPlayer
 local ragdollScript = nil
 local originalParent = nil
 local antiflingConnection = nil
 local walkflinging = false
+local antiAfkEnabled = false
+local virtualUserInstance = nil
+local antiAfkConnection = nil
 
 function OnyxHub:SetOwnerTag(tag)
     table.insert(self.Settings.OwnerTags, tag)
@@ -111,6 +115,41 @@ function OnyxHub:AntiFling(enable)
             antiflingConnection:Disconnect()
             antiflingConnection = nil
         end
+    end
+    return true
+end
+
+function OnyxHub:AntiAFK(enable)
+    antiAfkEnabled = enable
+    
+    if enable then
+        local GC = getconnections or get_signal_cons
+        if GC then
+            for i,v in pairs(GC(localPlayer.Idled)) do
+                if v["Disable"] then
+                    v["Disable"](v)
+                elseif v["Disconnect"] then
+                    v["Disconnect"](v)
+                end
+            end
+        else
+            virtualUserInstance = VirtualUser
+            virtualUserInstance:CaptureController()
+            virtualUserInstance:ClickButton2(Vector2.new())
+            
+            antiAfkConnection = localPlayer.Idled:Connect(function()
+                virtualUserInstance:CaptureController()
+                virtualUserInstance:ClickButton2(Vector2.new())
+            end)
+        end
+        print("Anti AFK enabled")
+    else
+        if antiAfkConnection then
+            antiAfkConnection:Disconnect()
+            antiAfkConnection = nil
+        end
+        virtualUserInstance = nil
+        print("Anti AFK disabled")
     end
     return true
 end
@@ -400,6 +439,14 @@ function OnyxHub:InitChatCommands()
             
         elseif text == "!rejoin" then
             self:RejoinServer()
+            
+        elseif text == "!antiafk" then
+            self:AntiAFK(true)
+            print("Anti AFK enabled via chat command")
+            
+        elseif text == "!unantiafk" then
+            self:AntiAFK(false)
+            print("Anti AFK disabled via chat command")
         end
     end
 end
@@ -410,7 +457,6 @@ function OnyxHub:Init()
     print("Owners: " .. table.concat(self.Settings.OwnerTags, ", "))
     return true
 end
-
 
 OnyxHub:Init()
 
