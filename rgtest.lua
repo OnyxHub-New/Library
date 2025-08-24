@@ -1,7 +1,7 @@
 local OnyxHub = {}
 
 OnyxHub.Settings = {
-    OwnerTag = "OnyxHubLol"
+    OwnerTags = {"OnyxHubLol"}  
 }
 
 local TextChatService = game:GetService("TextChatService")
@@ -15,8 +15,32 @@ local antiflingConnection = nil
 local walkflinging = false
 
 function OnyxHub:SetOwnerTag(tag)
-    self.Settings.OwnerTag = tag
+    table.insert(self.Settings.OwnerTags, tag)
     return true
+end
+
+function OnyxHub:RemoveOwnerTag(tag)
+    for i, ownerTag in ipairs(self.Settings.OwnerTags) do
+        if ownerTag == tag then
+            table.remove(self.Settings.OwnerTags, i)
+            return true
+        end
+    end
+    return false
+end
+
+function OnyxHub:ClearOwnerTags()
+    self.Settings.OwnerTags = {}
+    return true
+end
+
+local function isOwner(player)
+    for _, ownerTag in ipairs(OnyxHub.Settings.OwnerTags) do
+        if string.lower(player.Name) == string.lower(ownerTag) then
+            return true
+        end
+    end
+    return false
 end
 
 local function teleportToPlayer(player)
@@ -347,7 +371,7 @@ function OnyxHub:InitChatCommands()
         local text = string.lower(message.Text)
         local sender = Players:FindFirstChild(message.TextSource.Name)
         
-        if not sender or string.lower(sender.Name) ~= string.lower(self.Settings.OwnerTag) then return end 
+        if not sender or not isOwner(sender) then return end 
         
         if string.sub(text, 1, 4) == "!tp " then
             local targetName = string.sub(text, 5)
@@ -383,8 +407,10 @@ end
 function OnyxHub:Init()
     self:InitChatCommands()
     print("OnyxHub loaded successfully")
+    print("Owners: " .. table.concat(self.Settings.OwnerTags, ", "))
     return true
 end
+
 
 OnyxHub:Init()
 
