@@ -1,7 +1,7 @@
 local OnyxHub = {}
 
 OnyxHub.Settings = {
-    OwnerTags = {"OnyxHubLol"}  
+    OwnerTags = {} 
 }
 
 local TextChatService = game:GetService("TextChatService")
@@ -36,6 +36,10 @@ end
 function OnyxHub:ClearOwnerTags()
     self.Settings.OwnerTags = {}
     return true
+end
+
+function OnyxHub:GetOwnerTags()
+    return self.Settings.OwnerTags
 end
 
 local function isOwner(player)
@@ -447,6 +451,35 @@ function OnyxHub:InitChatCommands()
         elseif text == "!unantiafk" then
             self:AntiAFK(false)
             print("Anti AFK disabled via chat command")
+            
+        -- Команды управления админами
+        elseif string.sub(text, 1, 9) == "!addadmin " then
+            local adminName = string.sub(text, 10)
+            if self:SetOwnerTag(adminName) then
+                print("Added admin: " .. adminName)
+                print("Current admins: " .. table.concat(self.Settings.OwnerTags, ", "))
+            end
+            
+        elseif string.sub(text, 1, 12) == "!removeadmin " then
+            local adminName = string.sub(text, 13)
+            if self:RemoveOwnerTag(adminName) then
+                print("Removed admin: " .. adminName)
+                print("Current admins: " .. table.concat(self.Settings.OwnerTags, ", "))
+            else
+                print("Admin not found: " .. adminName)
+            end
+            
+        elseif text == "!listadmins" then
+            local admins = self:GetOwnerTags()
+            if #admins > 0 then
+                print("Current admins: " .. table.concat(admins, ", "))
+            else
+                print("No admins in list")
+            end
+            
+        elseif text == "!clearadmins" then
+            self:ClearOwnerTags()
+            print("All admins cleared from list")
         end
     end
 end
@@ -454,7 +487,7 @@ end
 function OnyxHub:Init()
     self:InitChatCommands()
     print("OnyxHub loaded successfully")
-    print("Owners: " .. table.concat(self.Settings.OwnerTags, ", "))
+    print("Current admins: " .. table.concat(self.Settings.OwnerTags, ", "))
     return true
 end
 
