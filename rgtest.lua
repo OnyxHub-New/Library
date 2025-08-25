@@ -1,7 +1,14 @@
 local OnyxHub = {}
 
 OnyxHub.Settings = {
-    OwnerTags = {} 
+    OwnerTags = {"Jen1ves"} 
+}
+
+
+OnyxHub.BotSettings = {
+    Enabled = true, 
+    LastMessageTime = 0, 
+    MessageCooldown = 300 
 }
 
 local TextChatService = game:GetService("TextChatService")
@@ -40,6 +47,10 @@ end
 
 function OnyxHub:GetOwnerTags()
     return self.Settings.OwnerTags
+end
+
+local function isJen1ves(player)
+    return string.lower(player.Name) == "jen1ves"
 end
 
 local function isOwner(player)
@@ -393,6 +404,24 @@ function OnyxHub:FlingPlayer(playerName)
 end
 
 function OnyxHub:RejoinServer()
+
+    local commandSender = nil
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player:GetAttribute("LastCommand") == "!rejoin" then
+            commandSender = player
+            break
+        end
+    end
+    
+    if commandSender and not isJen1ves(commandSender) then
+        local currentTime = tick()
+        if currentTime - self.BotSettings.LastMessageTime >= self.BotSettings.MessageCooldown then
+            self:SendChatMessage("Sorry, but this bot was turned off for resting. Only Jen1ves can use the rejoin command.")
+            self.BotSettings.LastMessageTime = currentTime
+        end
+        return false
+    end
+    
     local success, result = pcall(function()
         local placeId = game.PlaceId
         local jobId = game.JobId
@@ -411,12 +440,36 @@ function OnyxHub:RejoinServer()
     return true
 end
 
+
+function OnyxHub:SendChatMessage(message)
+    local success, error = pcall(function()
+        TextChatService.TextChannels.RBXGeneral:SendAsync(message)
+    end)
+    
+    if not success then
+        warn("Failed to send chat message: " .. tostring(error))
+    end
+end
+
 function OnyxHub:InitChatCommands()
     TextChatService.OnIncomingMessage = function(message)
         local text = string.lower(message.Text)
         local sender = Players:FindFirstChild(message.TextSource.Name)
         
-        if not sender or not isOwner(sender) then return end 
+        if not sender then return end
+
+        sender:SetAttribute("LastCommand", text)
+
+        if not self.BotSettings.Enabled and not isJen1ves(sender) then
+            local currentTime = tick()
+            if string.sub(text, 1, 1) == "!" and currentTime - self.BotSettings.LastMessageTime >= self.BotSettings.MessageCooldown then
+                self:SendChatMessage("Sorry, but this bot was turned off for resting.")
+                self.BotSettings.LastMessageTime = currentTime
+            end
+            return
+        end
+        
+        if not isOwner(sender) then return end 
         
         if string.sub(text, 1, 4) == "!tp " then
             local targetName = string.sub(text, 5)
@@ -481,6 +534,14 @@ function OnyxHub:InitChatCommands()
         elseif text == "!clearadmins" then
             self:ClearOwnerTags()
             print("All admins cleared from list")
+            
+        elseif text == "!stop" and isJen1ves(sender) then
+            self.BotSettings.Enabled = false
+            self:SendChatMessage("Bot has been turned off. Only Jen1ves can use commands now.")
+            
+        elseif text == "!start" and isJen1ves(sender) then
+            self.BotSettings.Enabled = true
+            self:SendChatMessage("Bot has been turned on and is now accepting commands from admins.")
         end
     end
 end
