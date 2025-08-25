@@ -60,13 +60,7 @@ local function teleportToPlayer(player)
 end
 
 function OnyxHub:TeleportToPlayer(playerName)
-    local foundPlayer = nil
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= localPlayer and string.find(string.lower(player.Name), string.lower(playerName), 1, true) then
-            foundPlayer = player
-            break
-        end
-    end
+    local foundPlayer = getPlayer(playerName)
     
     if foundPlayer then
         return teleportToPlayer(foundPlayer)
@@ -158,13 +152,21 @@ function OnyxHub:AntiAFK(enable)
     return true
 end
 
-local function findTargetPlayer(playerName)
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= localPlayer and string.find(string.lower(player.Name), string.lower(playerName), 1, true) then
-            return player
+-- Новая функция поиска игрока по имени или display name
+local function getPlayer(name)
+    local lowerName = string.lower(name)
+    for _, p in pairs(Players:GetPlayers()) do
+        local lowerPlayer = string.lower(p.Name)
+        if string.find(lowerPlayer, lowerName) then
+            return p
+        elseif string.find(string.lower(p.DisplayName), lowerName) then
+            return p
         end
     end
-    return nil
+end
+
+local function findTargetPlayer(playerName)
+    return getPlayer(playerName)
 end
 
 function OnyxHub:FlingPlayer(playerName)
@@ -451,8 +453,7 @@ function OnyxHub:InitChatCommands()
         elseif text == "!unantiafk" then
             self:AntiAFK(false)
             print("Anti AFK disabled via chat command")
-            
-        -- Команды управления админами
+
         elseif string.sub(text, 1, 9) == "!addadmin " then
             local adminName = string.sub(text, 10)
             if self:SetOwnerTag(adminName) then
