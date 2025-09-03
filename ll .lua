@@ -345,7 +345,7 @@ end
     })
   end
 
- 
+  Window.Parent = CoreGui
 
   local ResizeButton = Window.Main.Bottom.ResizeIcon.ResizeButton
   local TabContainer = Window.Main.Topbar.TabContainer
