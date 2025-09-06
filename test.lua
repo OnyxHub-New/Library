@@ -3286,7 +3286,6 @@ function UILibrary.new(gameName, userId, rank)
         end
     end)
 
-    GUI:SetAttribute("InputConnection", inputConnection)
     return setmetatable(
         {
             UI = {},
