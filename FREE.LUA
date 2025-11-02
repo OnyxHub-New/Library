@@ -450,15 +450,19 @@ local Passed, Statement = pcall(function()
 	end
 	--
 	function library:Unload()
-		if self.ScreenGui then
-			self.ScreenGui:Remove()
-		end
+
 		for index, connection in pairs(library.Connections) do
 			if connection then
 				connection:Disconnect()
 			end
 		end
 		library.Connections = {}
+
+		for index, render in pairs(library.Renders) do
+			if render[1] and render[1].Parent then
+				render[1]:Destroy()
+			end
+		end
 		library.Renders = {}
 		
 		print("ui unloaded")
