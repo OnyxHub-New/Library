@@ -1,13 +1,13 @@
 -- [[ // Error Handling // ]]
-local Passed, Statement = pcall(function()
-	-- [[ // Libraries // ]]
-	local library = {
+local library = {
 		Renders = {},
 		Connections = {},
-		Folder = "PuppyWare", -- Change if wanted
+		Folder = "onyx", -- Change if wanted
 		Assets = "Assets", -- Change if wanted
 		Configs = "Configs" -- Change if wanted
 	}
+local Passed, Statement = pcall(function()
+	-- [[ // Libraries // ]]
 	local utility = {}
 	-- [[ // Tables // ]]
 	local pages = {}
@@ -2368,4 +2368,5 @@ local Passed, Statement = pcall(function()
 		end
 	end
 	-- [[  // Main // ]]
-	return library
+end)
+return library
