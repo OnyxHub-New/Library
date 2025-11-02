@@ -298,8 +298,6 @@ local Passed, Statement = pcall(function()
 						Window.Enabled = not Window.Enabled
 						--
 						Window:Fade(Window.Enabled)
-					elseif Input.KeyCode and Input.KeyCode == Enum.KeyCode.X then
-						Window:Unload()
 					end
 				end)
 			end
@@ -308,6 +306,21 @@ local Passed, Statement = pcall(function()
 		return setmetatable(Window, library)
 	end
 	--
+	function library:Unload()
+		if self.ScreenGui then
+			self.ScreenGui:Remove()
+		end
+		for index, connection in pairs(library.Connections) do
+			if connection then
+				connection:Disconnect()
+			end
+		end
+		library.Connections = {}
+		library.Renders = {}
+		
+		print("ui unloaded")
+	end
+
 	function library:CreatePage(Properties)
 		Properties = Properties or {}
 		--
