@@ -235,6 +235,7 @@ local Passed, Statement = pcall(function()
 				ResetOnSpawn = true,
 				ZIndexBehavior = "Global"
 			})
+			library.ScreenGui = ScreenGui
 			-- //
 			local ScreenGui_MainFrame = utility:RenderObject("Frame", {
 				AnchorPoint = Vector2.new(0.5, 0.5),
@@ -450,20 +451,16 @@ local Passed, Statement = pcall(function()
 	end
 	--
 	function library:Unload()
-
+		if library.ScreenGui then
+			library.ScreenGui:Remove()
+		end
+		
 		for index, connection in pairs(library.Connections) do
-			if connection then
-				connection:Disconnect()
-			end
+			connection:Disconnect()
 		end
-		library.Connections = {}
-
-		for index, render in pairs(library.Renders) do
-			if render[1] and render[1].Parent then
-				render[1]:Destroy()
-			end
-		end
-		library.Renders = {}
+		
+		library = nil
+		utility = nil
 		
 		print("ui unloaded")
 	end
