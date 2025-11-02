@@ -72,6 +72,149 @@ local Passed, Statement = pcall(function()
 		--
 		return Table3
 	end
+	function sections:CreateButton(Properties)
+		Properties = Properties or {}
+		--
+		local Content = {
+			Name = (Properties.name or Properties.Name or Properties.title or Properties.Title or "New Button"),
+			Callback = (Properties.callback or Properties.Callback or Properties.callBack or Properties.CallBack or function() end),
+			Window = self.Window,
+			Page = self.Page,
+			Section = self
+		}
+		--
+		do
+			local Content_Holder = utility:RenderObject("Frame", {
+				BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+				BackgroundTransparency = 1,
+				BorderColor3 = Color3.fromRGB(0, 0, 0),
+				BorderSizePixel = 0,
+				Parent = Content.Section.Holder,
+				Size = UDim2.new(1, 0, 0, 20 + 5),
+				ZIndex = 3
+			})
+			-- //
+			local Content_Holder_Outline = utility:RenderObject("Frame", {
+				BackgroundColor3 = Color3.fromRGB(12, 12, 12),
+				BackgroundTransparency = 0,
+				BorderColor3 = Color3.fromRGB(0, 0, 0),
+				BorderSizePixel = 0,
+				Parent = Content_Holder,
+				Position = UDim2.new(0, 40, 0, 5),
+				Size = UDim2.new(1, -98, 0, 20),
+				ZIndex = 3
+			})
+			--
+			local Content_Holder_Button = utility:RenderObject("TextButton", {
+				BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+				BackgroundTransparency = 1,
+				BorderColor3 = Color3.fromRGB(0, 0, 0),
+				BorderSizePixel = 0,
+				Parent = Content_Holder,
+				Size = UDim2.new(1, 0, 1, 0),
+				Text = ""
+			})
+			-- //
+			local Holder_Outline_Frame = utility:RenderObject("Frame", {
+				BackgroundColor3 = Color3.fromRGB(36, 36, 36),
+				BackgroundTransparency = 0,
+				BorderColor3 = Color3.fromRGB(0, 0, 0),
+				BorderSizePixel = 0,
+				Parent = Content_Holder_Outline,
+				Position = UDim2.new(0, 1, 0, 1),
+				Size = UDim2.new(1, -2, 1, -2),
+				ZIndex = 3
+			})
+			-- //
+			local Outline_Frame_Gradient = utility:RenderObject("UIGradient", {
+				Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(220, 220, 220)),
+				Enabled = true,
+				Rotation = 270,
+				Parent = Holder_Outline_Frame
+			})
+			--
+			local Outline_Frame_Title = utility:RenderObject("TextLabel", {
+				BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+				BackgroundTransparency = 1,
+				BorderColor3 = Color3.fromRGB(0, 0, 0),
+				BorderSizePixel = 0,
+				Parent = Holder_Outline_Frame,
+				Position = UDim2.new(0, 0, 0, 0),
+				Size = UDim2.new(1, 0, 1, 0),
+				ZIndex = 3,
+				Font = "Code",
+				RichText = true,
+				Text = Content.Name,
+				TextColor3 = Color3.fromRGB(205, 205, 205),
+				TextSize = 9,
+				TextStrokeTransparency = 1,
+				TextXAlignment = "Center"
+			})
+			--
+			local Outline_Frame_Title2 = utility:RenderObject("TextLabel", {
+				BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+				BackgroundTransparency = 1,
+				BorderColor3 = Color3.fromRGB(0, 0, 0),
+				BorderSizePixel = 0,
+				Parent = Holder_Outline_Frame,
+				Position = UDim2.new(0, 0, 0, 0),
+				Size = UDim2.new(1, 0, 1, 0),
+				ZIndex = 3,
+				Font = "Code",
+				RichText = true,
+				Text = Content.Name,
+				TextColor3 = Color3.fromRGB(205, 205, 205),
+				TextSize = 9,
+				TextStrokeTransparency = 1,
+				TextTransparency = 0.5,
+				TextXAlignment = "Center"
+			})
+			--
+			do -- // Functions
+				function Content:Click()
+					Content.Callback()
+				end
+				
+				function Content:SetText(text)
+					Content.Name = text
+					Outline_Frame_Title.Text = Content.Name
+					Outline_Frame_Title2.Text = Content.Name
+				end
+				
+				function Content:GetText()
+					return Content.Name
+				end
+			end
+			--
+			do -- // Connections
+				utility:CreateConnection(Content_Holder_Button.MouseButton1Click, function()
+					Content:Click()
+				end)
+				--
+				utility:CreateConnection(Content_Holder_Button.MouseEnter, function()
+					Holder_Outline_Frame.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+					Outline_Frame_Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+					Outline_Frame_Title2.TextColor3 = Color3.fromRGB(255, 255, 255)
+				end)
+				--
+				utility:CreateConnection(Content_Holder_Button.MouseLeave, function()
+					Holder_Outline_Frame.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
+					Outline_Frame_Title.TextColor3 = Color3.fromRGB(205, 205, 205)
+					Outline_Frame_Title2.TextColor3 = Color3.fromRGB(205, 205, 205)
+				end)
+				--
+				utility:CreateConnection(Content_Holder_Button.MouseButton1Down, function()
+					Holder_Outline_Frame.BackgroundColor3 = Color3.fromRGB(56, 56, 56)
+				end)
+				--
+				utility:CreateConnection(Content_Holder_Button.MouseButton1Up, function()
+					Holder_Outline_Frame.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+				end)
+			end
+		end
+		--
+		return Content
+	end
 	-- [[ // UI Functions // ]]
 	function library:CreateWindow(Properties)
 		Properties = Properties or {}
