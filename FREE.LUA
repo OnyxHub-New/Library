@@ -232,31 +232,42 @@ local Passed, Statement = pcall(function()
 				function Window:Fade(state)
 					for index, render in pairs(library.Renders) do
 						if not render[3] then
-							if render[1].ClassName == "Frame" and (render[2]["BackgroundTransparency"] or 0) ~= 1 then
-								tws:Create(render[1], TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {BackgroundTransparency = state and (render[2]["BackgroundTransparency"] or 0) or 1}):Play()
-							elseif render[1].ClassName == "ImageLabel" then
-								if (render[2]["BackgroundTransparency"] or 0) ~= 1 then
-									tws:Create(render[1], TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {BackgroundTransparency = state and (render[2]["BackgroundTransparency"] or 0) or 1}):Play()
+							local obj = render[1]
+							if state == false then
+								if obj:IsA("TextButton") or obj:IsA("TextButton") then
+									obj.Active = false
+								elseif obj:IsA("ScrollingFrame") then
+									obj.ScrollingEnabled = false
 								end
-								--
+							else
+								if obj:IsA("TextButton") or obj:IsA("TextButton") then
+									obj.Active = true
+								elseif obj:IsA("ScrollingFrame") then
+									obj.ScrollingEnabled = true
+								end
+							end
+							if obj.ClassName == "Frame" and (render[2]["BackgroundTransparency"] or 0) ~= 1 then
+								tws:Create(obj, TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {BackgroundTransparency = state and (render[2]["BackgroundTransparency"] or 0) or 1}):Play()
+							elseif obj.ClassName == "ImageLabel" then
+								if (render[2]["BackgroundTransparency"] or 0) ~= 1 then
+									tws:Create(obj, TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {BackgroundTransparency = state and (render[2]["BackgroundTransparency"] or 0) or 1}):Play()
+								end
 								if (render[2]["ImageTransparency"] or 0) ~= 1 then
-									tws:Create(render[1], TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {ImageTransparency = state and (render[2]["ImageTransparency"] or 0) or 1}):Play()
+									tws:Create(obj, TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {ImageTransparency = state and (render[2]["ImageTransparency"] or 0) or 1}):Play()
 								end
-							elseif render[1].ClassName == "TextLabel" then
+							elseif obj.ClassName == "TextLabel" then
 								if (render[2]["BackgroundTransparency"] or 0) ~= 1 then
-									tws:Create(render[1], TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {BackgroundTransparency = state and (render[2]["BackgroundTransparency"] or 0) or 1}):Play()
+									tws:Create(obj, TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {BackgroundTransparency = state and (render[2]["BackgroundTransparency"] or 0) or 1}):Play()
 								end
-								--
 								if (render[2]["TextTransparency"] or 0) ~= 1 then
-									tws:Create(render[1], TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {TextTransparency = state and (render[2]["TextTransparency"] or 0) or 1}):Play()
+									tws:Create(obj, TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {TextTransparency = state and (render[2]["TextTransparency"] or 0) or 1}):Play()
 								end
-							elseif render[1].ClassName == "ScrollingFrame" then
+							elseif obj.ClassName == "ScrollingFrame" then
 								if (render[2]["BackgroundTransparency"] or 0) ~= 1 then
-									tws:Create(render[1], TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {BackgroundTransparency = state and (render[2]["BackgroundTransparency"] or 0) or 1}):Play()
+									tws:Create(obj, TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {BackgroundTransparency = state and (render[2]["BackgroundTransparency"] or 0) or 1}):Play()
 								end
-								--
 								if (render[2]["ScrollBarImageTransparency"] or 0) ~= 1 then
-									tws:Create(render[1], TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {ScrollBarImageTransparency = state and (render[2]["ScrollBarImageTransparency"] or 0) or 1}):Play()
+									tws:Create(obj, TweenInfo.new(render[4] or 0.25, Enum.EasingStyle["Linear"], state and Enum.EasingDirection["Out"] or Enum.EasingDirection["In"]), {ScrollBarImageTransparency = state and (render[2]["ScrollBarImageTransparency"] or 0) or 1}):Play()
 								end
 							end
 						end
