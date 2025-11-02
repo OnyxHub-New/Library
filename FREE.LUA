@@ -230,17 +230,7 @@ local Passed, Statement = pcall(function()
 				end
 				--
 				function Window:Fade(state)
-					local screenGui = nil
-						for index, render in pairs(library.Renders) do
-							if render[1].ClassName == "ScreenGui" then
-								screenGui = render[1]
-								break
-							end
-						end
-						
-						if screenGui then
-							screenGui.Enabled = state
-						end
+					
 					for index, render in pairs(library.Renders) do
 						if not render[3] then
 							if render[1].ClassName == "Frame" and (render[2]["BackgroundTransparency"] or 0) ~= 1 then
@@ -272,6 +262,17 @@ local Passed, Statement = pcall(function()
 							end
 						end
 					end
+					local screenGui = nil
+						for index, render in pairs(library.Renders) do
+							if render[1].ClassName == "ScreenGui" then
+								screenGui = render[1]
+								break
+							end
+						end
+						
+						if screenGui then
+							screenGui.Enabled = state
+						end
 				end
 				--
 				function Window:Unload()
