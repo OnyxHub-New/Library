@@ -1476,10 +1476,7 @@ local Passed, Statement = pcall(function()
 								if Content.Content.Open and Input.UserInputType == Enum.UserInputType.MouseButton1 then
 									local Mouse = utility:MouseLocation()
 									--
-									if not (Mouse.X > Content_Open_Holder.AbsolutePosition.X and 
-											Mouse.Y > Content_Open_Holder.AbsolutePosition.Y and 
-											Mouse.X < (Content_Open_Holder.AbsolutePosition.X + Content_Open_Holder.AbsoluteSize.X) and 
-											Mouse.Y < (Content_Open_Holder.AbsolutePosition.Y + Content_Open_Holder.AbsoluteSize.Y)) then
+									if not (Mouse.X > Content_Open_Holder.AbsolutePosition.X  and Mouse.Y > (Content_Open_Holder.AbsolutePosition.Y + 36) and Mouse.X < (Content_Open_Holder.AbsolutePosition.X + Content_Open_Holder.AbsoluteSize.X) and Mouse.Y < (Content_Open_Holder.AbsolutePosition.Y + Content_Open_Holder.AbsoluteSize.Y + 36)) then
 										Content.Section:CloseContent()
 									end
 								end
@@ -1876,10 +1873,7 @@ local Passed, Statement = pcall(function()
 								if Content.Content.Open and Input.UserInputType == Enum.UserInputType.MouseButton1 then
 									local Mouse = utility:MouseLocation()
 									--
-									if not (Mouse.X > Content_Open_Holder.AbsolutePosition.X and 
-											Mouse.Y > Content_Open_Holder.AbsolutePosition.Y and 
-											Mouse.X < (Content_Open_Holder.AbsolutePosition.X + Content_Open_Holder.AbsoluteSize.X) and 
-											Mouse.Y < (Content_Open_Holder.AbsolutePosition.Y + Content_Open_Holder.AbsoluteSize.Y)) then
+									if not (Mouse.X > Content_Open_Holder.AbsolutePosition.X and Mouse.Y > (Content_Open_Holder.AbsolutePosition.Y + 36) and Mouse.X < (Content_Open_Holder.AbsolutePosition.X + Content_Open_Holder.AbsoluteSize.X) and Mouse.Y < (Content_Open_Holder.AbsolutePosition.Y + Content_Open_Holder.AbsoluteSize.Y + 36)) then
 										Content.Section:CloseContent()
 									end
 								end
