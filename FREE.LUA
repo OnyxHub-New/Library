@@ -89,7 +89,7 @@ local Passed, Statement = pcall(function()
 				Enabled = true,
 				IgnoreGuiInset = true,
 				Parent = cre,
-				ResetOnSpawn = false,
+				ResetOnSpawn = true,
 				ZIndexBehavior = "Global"
 			})
 			-- //
