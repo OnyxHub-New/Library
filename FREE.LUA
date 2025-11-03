@@ -223,7 +223,7 @@ local Passed, Statement = pcall(function()
 			Pages = {},
 			Accent = Color3.fromRGB(255, 120, 30), -- Color3.fromRGB(136, 180, 57) -- Change if wanted
 			Enabled = true,
-			Key = Enum.KeyCode.Z -- Change if wanted
+			Key = Enum.KeyCode.RightControl -- Change if wanted
 		}
 		--
 		do
