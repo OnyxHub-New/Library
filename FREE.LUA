@@ -1065,7 +1065,7 @@ local Passed, Statement = pcall(function()
 				Name = (Properties.name or Properties.Name or Properties.title or Properties.Title or nil),
 				State = (Properties.state or Properties.State or Properties.def or Properties.Def or Properties.default or Properties.Default or false),
 				Min = (Properties.min or Properties.Min or Properties.minimum or Properties.Minimum or 0),
-				Max = (Properties.max or Properties.Max or Properties.maxmimum or Properties.Maximum or 100),
+				Max = (Properties.max or Properties.Max or Properties.maxmimum or Properties.Maximum or 500),
 				Ending = (Properties.ending or Properties.Ending or Properties.suffix or Properties.Suffix or ""),
 				Decimals = (1 / (Properties.decimals or Properties.Decimals or Properties.tick or Properties.Tick or 1)),
 				Callback = (Properties.callback or Properties.Callback or Properties.callBack or Properties.CallBack or function() end),
@@ -1454,6 +1454,14 @@ local Passed, Statement = pcall(function()
 						--
 						if Content.Content.Open then
 							Content.Content:Refresh(Content:Get())
+						end
+					end
+					function Content:UpdateOptions(newOptions)
+						Content.Options = newOptions or Content.Options
+						Outline_Frame_Title.Text = Content.Options[Content:Get()] or ""
+						Outline_Frame_Title2.Text = Content.Options[Content:Get()] or ""
+						if Content.Content.Open then
+							Content.Section:CloseContent()
 						end
 					end
 					--
