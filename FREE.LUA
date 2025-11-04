@@ -72,6 +72,81 @@ local Passed, Statement = pcall(function()
 		--
 		return Table3
 	end
+	function sections:CreateLabel(Properties)
+		Properties = Properties or {}
+		--
+		local Content = {
+			Name = (Properties.name or Properties.Name or Properties.title or Properties.Title or Properties.text or Properties.Text or "New Label"),
+			Window = self.Window,
+			Page = self.Page,
+			Section = self
+		}
+		--
+		do
+			local Content_Holder = utility:RenderObject("Frame", {
+				BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+				BackgroundTransparency = 1,
+				BorderColor3 = Color3.fromRGB(0, 0, 0),
+				BorderSizePixel = 0,
+				Parent = Content.Section.Holder,
+				Size = UDim2.new(1, 0, 0, 15),
+				ZIndex = 3
+			})
+			--
+			local Content_Holder_Title = utility:RenderObject("TextLabel", {
+				AnchorPoint = Vector2.new(0, 0),
+				BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+				BackgroundTransparency = 1,
+				BorderColor3 = Color3.fromRGB(0, 0, 0),
+				BorderSizePixel = 0,
+				Parent = Content_Holder,
+				Position = UDim2.new(0, 0, 0, 0),
+				Size = UDim2.new(1, 0, 1, 0),
+				ZIndex = 3,
+				Font = "Code",
+				RichText = true,
+				Text = Content.Name,
+				TextColor3 = Color3.fromRGB(205, 205, 205),
+				TextSize = 9,
+				TextStrokeTransparency = 1,
+				TextXAlignment = "Left"
+			})
+			--
+			local Content_Holder_Title2 = utility:RenderObject("TextLabel", {
+				AnchorPoint = Vector2.new(0, 0),
+				BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+				BackgroundTransparency = 1,
+				BorderColor3 = Color3.fromRGB(0, 0, 0),
+				BorderSizePixel = 0,
+				Parent = Content_Holder,
+				Position = UDim2.new(0, 0, 0, 0),
+				Size = UDim2.new(1, 0, 1, 0),
+				ZIndex = 3,
+				Font = "Code",
+				RichText = true,
+				Text = Content.Name,
+				TextColor3 = Color3.fromRGB(205, 205, 205),
+				TextSize = 9,
+				TextStrokeTransparency = 1,
+				TextTransparency = 0.5,
+				TextXAlignment = "Left"
+			})
+			--
+			do -- // Functions
+				function Content:SetText(text)
+					Content.Name = text
+					Content_Holder_Title.Text = Content.Name
+					Content_Holder_Title2.Text = Content.Name
+				end
+				
+				function Content:GetText()
+					return Content.Name
+				end
+			end
+		end
+		--
+		return Content
+	end
 	function sections:CreateButton(Properties)
 		Properties = Properties or {}
 		--
