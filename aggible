@@ -4556,7 +4556,7 @@ function library:Load(options)
         playerlist = false,
         playerlistmax = options.maxplayers or 32,
         performancedrag = true,
-        keybindlist = true,
+        keybindlist = false,
         font = worldtoscreen ~= nil and "system" or "plex",
         fontsize = 13,
         discord = "b7UAaYHhk",
