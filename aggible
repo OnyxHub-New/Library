@@ -4012,7 +4012,53 @@ function library:Playerlist(max_players)
             options.callback(self, current_player)
         end)
     end
+    function library.Playerlist:Toggle(options)
+        utility.format(options)
+        options.name = options.name or "toggle"
 
+        local holder = {colorpickers = 0, section = self, name = options.name}
+
+        holder.main = card:Create("Square", {
+            Size = newUDim2(0, options.name == "Spectate" and 80 or 60, 0, 15),
+            Position = newUDim2(1, -self.button_size, 1, -21),
+            ZIndex = 29,
+            Theme = "Object Background",
+            OutlineTheme = "Object Border"
+        })
+
+        utility.auto_button_color(holder.main, "Object Background", fromRGB(3, 3, 3), fromRGB(8, 8, 8))
+
+        holder.text = holder.main:Create("Text", {
+            Text = options.name,
+            Font = library.font,
+            Size = library.font_size,
+            Position = newUDim2(0.5, 0, 0, 1),
+            Theme = "Text",
+            Center = true,
+            ZIndex = 30
+        })
+
+        self.button_size += holder.main.AbsoluteSize.X + 8
+
+        local function toggle()
+            holder.toggled = not holder.toggled
+            
+            if holder.toggled then
+                holder.text.Color = library.theme["Accent"]
+            else
+                holder.text.Color = library.theme["Text"]
+            end
+
+            if options.callback then
+                options.callback(holder.toggled, current_player)
+            end
+        end
+
+        holder.toggle = toggle
+        holder.main.MouseButton1Click:Connect(toggle)
+
+        return holder
+    end
     function library.Playerlist:Label(options)
         utility.format(options)
 
